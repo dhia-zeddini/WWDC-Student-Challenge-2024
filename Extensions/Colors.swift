@@ -36,7 +36,9 @@ extension Color {
 }
 // Extension for custom colors
 extension Color {
-    static let themePrimary = Color(hex: "#152354")
-    static let themeSecondary = Color(hex: "#FD6969")
-    static let themeGray = Color(hex: "#F7F8F9")
+    
+    static let themeSecondary = Color(hex: "#faf9f0")
+    static let themePrimary = Color(hex: "#fefbf0")
+    static let themeBlue = Color(hex: "#3b9dde")
+    static let themeLightBlue = Color(hex: "#5bd2dd")
 }
