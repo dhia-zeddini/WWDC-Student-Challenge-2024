@@ -40,6 +40,6 @@ class AddNewPetFormViewModel: ObservableObject {
     func savePet() {
         let weight = "\(kilos).\(grams)"+unitOfMeasure
         let imagePth="test.png"
-        service.savePet(name: petName, type: selectedType.rawValue, sexe: selectedSexe.rawValue, breed: selectedBreed, birthDate: petBirthDate,weight: weight, imagePath: imagePth, isNeutered: isNeutered, isAllergic: isAlergic, lastVaccinationDate: lastVaccinationDate)
+        service.savePet(name: "petName", type: selectedType.rawValue, sexe: selectedSexe.rawValue, breed: selectedBreed, birthDate: petBirthDate,weight: weight, imagePath: imagePth, isNeutered: isNeutered, isAllergic: isAlergic, lastVaccinationDate: lastVaccinationDate)
     }
 }

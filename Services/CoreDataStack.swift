@@ -11,19 +11,20 @@ import CoreData
 class CoreDataStack {
     static let shared = CoreDataStack()
 
-    lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "PetModel")
-        let description = NSPersistentStoreDescription()
-        description.type = NSInMemoryStoreType
-        container.persistentStoreDescriptions = [description]
+      lazy var persistentContainer: NSPersistentContainer = {
+          let model = self.createModel() // Ensure we create and set the model
+          let container = NSPersistentContainer(name: "PetModel", managedObjectModel: model)
+          let description = NSPersistentStoreDescription()
+          description.type = NSInMemoryStoreType
+          container.persistentStoreDescriptions = [description]
 
-        container.loadPersistentStores { (_, error) in
-            if let error = error {
-                fatalError("Unresolved error \(error)")
-            }
-        }
-        return container
-    }()
+          container.loadPersistentStores { (_, error) in
+              if let error = error {
+                  fatalError("Unresolved error \(error)")
+              }
+          }
+          return container
+      }()
     private func createModel() -> NSManagedObjectModel {
         let model = NSManagedObjectModel()
         let petEntity = NSEntityDescription()
