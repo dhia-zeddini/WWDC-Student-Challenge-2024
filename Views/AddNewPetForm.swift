@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
-let screenWidth: CGFloat = UIScreen.main.bounds.width
-let screenHeight: CGFloat = UIScreen.main.bounds.height
-let customFont: String = "Marker felt"
+
 struct AddNewPetForm: View {
+    let screenWidth:CGFloat=Constants.screenWidth
+    let screenHeight:CGFloat=Constants.screenHeight
     @State private var value: String=""
     enum Sexe: String, CaseIterable, Identifiable {
             case male, female
@@ -24,6 +24,8 @@ struct AddNewPetForm: View {
     @State private var selectedBreed: String = ""
     @State private var petBirthDate: Date = Date()
     @State private var isAlergic: Bool = false
+    @State private var isNeutered: Bool = false
+    @State private var isSick: Bool = false
     @State private var kilos: Int = 0
     @State private var grams: Int = 0
     @State private var unitOfMeasure: String = "kg"
@@ -41,107 +43,97 @@ struct AddNewPetForm: View {
     var body: some View {
         VStack(spacing: screenWidth/16){
             HStack (spacing: screenWidth/16){
-                VStack(spacing: 30){
-                    ZStack {
-                        
-                        Image("dog-image")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: screenWidth / 3, height: screenWidth / 3)
-                            .clipShape(Circle())
-                            .overlay(
-                                Circle().stroke(Color.black, lineWidth: 4)
-                            )
-                        
-                        Button(action: {
-                            // Action to perform when the button is tapped
-                            print(selectedSexe)
-                        }) {
-                            Image(systemName: "plus")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 40, height: 40)
-                                .foregroundColor(.white)
-                            
-                        } .padding()
-                            .background(Color.themeBlue)
-                            .cornerRadius(50)
-                            .offset(x: screenWidth / 9, y: screenWidth / 8)
-                    }
-                    medicalInfo
-                    
-                    
-                }
-                VStack(alignment:.leading,spacing: 20){
-                    Text("New Pet")
-                        .font(.custom(customFont, size: 50))
-                        .bold()
-                        .foregroundColor(.black)
-                    
-                    
-                    CustomTF(hint: "Enter your pet name", label:"Name", value: $value)
-                        .padding(.top,30)
-                    HStack{
-                        typeSelection
-                        Spacer()
-                        sexeSelection
-                    }
-                    
-                    Picker("Breed", selection: $selectedBreed) {
-                        ForEach(breedOptions, id: \.self) { breed in
-                            Text(breed)
-                        }
-                    }
-                    .pickerStyle(.wheel)
-                    .background(RoundedRectangle(cornerRadius:50)
-                        .fill(Color.themeSecondary))
-                    .shadow(radius: 1)
-                    DatePicker(
-                        "Birth Date",
-                        selection: $petBirthDate,
-                        displayedComponents: .date
-                    )
-                    .padding()
-                    .background(Color.themeSecondary)
-                    .cornerRadius(30)
-                    .shadow(radius: 1)
-                    HStack{
-                        Text("Weight :")
-                            .font(.custom(customFont, size: 20))
-                           // .bold()
-                            .foregroundColor(.black)
-                        WeightPicker(kilos: $kilos, grams: $grams, unitOfMeasure: $unitOfMeasure)
-                                            .frame(height: 150) // Adjust the height as needed
-                                            .clipped()
-                                            .padding(.vertical, 8)
-                    }
-                    
-                    
-                }
-                
+                petImageSection
+                petDetailsSection
             }
-            HStack{
-                Button(action: {
-                    
-                }) {
-                    Text("Save")
-                        .foregroundColor(.white)
-                        .font(.custom(customFont, size: 40))
-                        .bold()
-                    
-                }
-                .frame(maxWidth: 200)
-                .padding()
-                .background(Color.themeBlue)
-                //.padding(.horizontal, 40)
-                .cornerRadius(30)
-            }
+       saveButton
         }.padding()
             .padding(.horizontal,30)
     }
+    private var petImageSection: some View {
+            VStack(spacing: 30){
+                ZStack {
+                    
+                    Image("dog-image")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: screenWidth / 3, height: screenWidth / 3)
+                        .clipShape(Circle())
+                        .overlay(
+                            Circle().stroke(Color.black, lineWidth: 4)
+                        )
+                    
+                    Button(action: {
+                        // Action to perform when the button is tapped
+                        print(selectedSexe)
+                    }) {
+                        Image(systemName: "camera")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(.white)
+                        
+                    } .padding()
+                        .background(Color.themeBlue)
+                        .cornerRadius(50)
+                        .offset(x: screenWidth / 9, y: screenWidth / 8)
+                }
+                medicalInfo
+                
+                
+            }
+        
+    }
+    private var petDetailsSection: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("New Pet")
+                .font(.custom(Constants.customFont, size: 50))
+                .bold()
+                .foregroundColor(.black)
+            
+            
+            CustomTF(hint: "Enter your pet name", label:"Name", value: $value)
+                .padding(.top,30)
+            HStack{
+                typeSelection
+                Spacer()
+                sexeSelection
+            }
+            
+            Picker("Breed", selection: $selectedBreed) {
+                ForEach(breedOptions, id: \.self) { breed in
+                    Text(breed)
+                }
+            }
+            .pickerStyle(.wheel)
+            .background(RoundedRectangle(cornerRadius:50)
+                .fill(Color.themeSecondary))
+            .shadow(radius: 1)
+            DatePicker(
+                "Birth Date",
+                selection: $petBirthDate,
+                displayedComponents: .date
+            )
+            .padding()
+            .background(Color.themeSecondary)
+            .cornerRadius(30)
+            .shadow(radius: 1)
+            HStack{
+                Text("Weight :")
+                    .font(.custom(Constants.customFont, size: 20))
+                   // .bold()
+                    .foregroundColor(.black)
+                WeightPicker(kilos: $kilos, grams: $grams, unitOfMeasure: $unitOfMeasure)
+                                    .frame(height: 150) // Adjust the height as needed
+                                    .clipped()
+                                    .padding(.vertical, 8)
+            }
+            
+            
+        }
+    }
     private var typeSelection: some View {
         HStack {
-           // Spacer()
             ForEach(PetType.allCases) { type in
                 Button(action: {
                     selectedType = type
@@ -159,7 +151,6 @@ struct AddNewPetForm: View {
                         )
                     
                 }
-                //Spacer()
             }
             
             
@@ -167,7 +158,6 @@ struct AddNewPetForm: View {
     }
     private var sexeSelection: some View {
         HStack {
-           // Spacer()
             ForEach(Sexe.allCases) { sexe in
                 Button(action: {
                     selectedSexe = sexe
@@ -185,7 +175,6 @@ struct AddNewPetForm: View {
                         )
                     
                 }
-               // Spacer()
             }
             
             
@@ -194,13 +183,12 @@ struct AddNewPetForm: View {
     private var medicalInfo: some View {
         VStack(alignment:.leading,spacing: 20){
             Text("Medical Informations")
-                .font(.custom(customFont, size: 30))
-               // .bold()
+                .font(.custom(Constants.customFont, size: 30))
                 .foregroundColor(.black)
      
-            CustomToggle(label: "Neutered", isToggle: $isAlergic)
+            CustomToggle(label: "Neutered", isToggle: $isNeutered)
             CustomToggle(label: "Allergies", isToggle: $isAlergic)
-            CustomToggle(label: "Sick", isToggle: $isAlergic)
+         //   CustomToggle(label: "Sick", isToggle: $isAlergic)
             DatePicker(
                            "Last Vaccination Date",
                            selection: $petBirthDate,
@@ -213,7 +201,19 @@ struct AddNewPetForm: View {
                     
         }
     }
-    
+    private var saveButton: some View {
+        Button(action: {
+            // Save action
+        }) {
+            Text("Save")
+                .font(.custom(Constants.customFont, size: 40))
+                .foregroundColor(.white)
+                .padding()
+                .frame(maxWidth: 200)
+                .background(Color.themeBlue)
+                .cornerRadius(30)
+        }
+    }
 }
 
 #Preview {

@@ -32,8 +32,6 @@ struct CustomTF: View {
             VStack{
                 
                 TextField(hint,text: $value)
-                    // .padding(.horizontal,20)
-                
             }
             .padding()
             .background(Color.themeSecondary)
@@ -41,10 +39,6 @@ struct CustomTF: View {
             .shadow(radius: 1)
      
         })
-        
-        //.padding(.horizontal, 40)
-        
-        
     }
 }
 
