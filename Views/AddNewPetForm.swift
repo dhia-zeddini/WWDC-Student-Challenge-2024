@@ -23,6 +23,10 @@ struct AddNewPetForm: View {
     @State private var selectedType: PetType = .dog
     @State private var selectedBreed: String = ""
     @State private var petBirthDate: Date = Date()
+    @State private var isAlergic: Bool = false
+    @State private var kilos: Int = 0
+    @State private var grams: Int = 0
+    @State private var unitOfMeasure: String = "kg"
     let dogBreeds = ["Labrador Retriever", "German Shepherd", "Golden Retriever"]
         let catBreeds = ["Persian", "Maine Coon", "Siamese"]
     var breedOptions: [String] {
@@ -33,64 +37,56 @@ struct AddNewPetForm: View {
                 return catBreeds
             }
         }
+    
     var body: some View {
-        
-        HStack (spacing: screenWidth/14){
-            VStack{
-            ZStack {
-                
-                Image("dog-image")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: screenWidth / 2.7, height: screenWidth / 2.7)
-                    .clipShape(Circle())
-                    .overlay(
-                        Circle().stroke(Color.black, lineWidth: 4)
-                    )
-                
-                Button(action: {
-                    // Action to perform when the button is tapped
-                    print(selectedSexe)
-                }) {
-                    Image(systemName: "plus")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 40, height: 40)
-                        .foregroundColor(.white)
-                    
-                } .padding()
-                    .background(Color.themeBlue)
-                    .cornerRadius(50)
-                    .offset(x: screenWidth / 8, y: screenWidth / 7)
-            }
-                //Spacer()
-        }
-            VStack(alignment:.leading,spacing: 20){
-                Text("New Pet")
-                    .font(.custom(customFont, size: 50))
-                    .bold()
-                    .foregroundColor(.black)
-                
-                CustomTF(hint: "Enter your pet name", label:"Name", value: $value)
-              /*  Picker("Type", selection: $selectedType) {
-                    ForEach(PetType.allCases) { type in
+        VStack(spacing: screenWidth/16){
+            HStack (spacing: screenWidth/16){
+                VStack(spacing: 30){
+                    ZStack {
                         
-                     //Text(type.rawValue.capitalized)
-                          //  .background(Color.themeBlue)
-                        
-                        Image(type.rawValue)
+                        Image("dog-image")
                             .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 5,height: 5)
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: screenWidth / 3, height: screenWidth / 3)
                             .clipShape(Circle())
+                            .overlay(
+                                Circle().stroke(Color.black, lineWidth: 4)
+                            )
+                        
+                        Button(action: {
+                            // Action to perform when the button is tapped
+                            print(selectedSexe)
+                        }) {
+                            Image(systemName: "plus")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 40, height: 40)
+                                .foregroundColor(.white)
+                            
+                        } .padding()
+                            .background(Color.themeBlue)
+                            .cornerRadius(50)
+                            .offset(x: screenWidth / 9, y: screenWidth / 8)
+                    }
+                    medicalInfo
+                    
+                    
+                }
+                VStack(alignment:.leading,spacing: 20){
+                    Text("New Pet")
+                        .font(.custom(customFont, size: 50))
+                        .bold()
+                        .foregroundColor(.black)
+                    
+                    
+                    CustomTF(hint: "Enter your pet name", label:"Name", value: $value)
+                        .padding(.top,30)
+                    HStack{
+                        typeSelection
+                        Spacer()
+                        sexeSelection
                     }
                     
-                }.background(Color.themeSecondary)
-                .cornerRadius(30)
-                .pickerStyle(SegmentedPickerStyle())
-                .shadow(radius: 1)*/
-                typeSelection
-               // Form{
                     Picker("Breed", selection: $selectedBreed) {
                         ForEach(breedOptions, id: \.self) { breed in
                             Text(breed)
@@ -100,39 +96,52 @@ struct AddNewPetForm: View {
                     .background(RoundedRectangle(cornerRadius:50)
                         .fill(Color.themeSecondary))
                     .shadow(radius: 1)
-                    
-                    
-               // }.scrollContentBackground(.hidden)
-               //     .frame(height: 100)
-                  
-                DatePicker(
-                               "Birth Date",
-                               selection: $petBirthDate,
-                               displayedComponents: .date
-                           )
-                           .padding()
-                           .background(Color.themeSecondary)
-                           .cornerRadius(30)
-                           .shadow(radius: 1)
-                
-                  /*  Picker("Sexe", selection: $selectedSexe) {
-                        ForEach(Sexe.allCases) { sexe in
-                         Text(sexe.rawValue.capitalized)
-                        }
-                    }.background(Color.themeSecondary)
+                    DatePicker(
+                        "Birth Date",
+                        selection: $petBirthDate,
+                        displayedComponents: .date
+                    )
+                    .padding()
+                    .background(Color.themeSecondary)
                     .cornerRadius(30)
-                    .pickerStyle(SegmentedPickerStyle())
                     .shadow(radius: 1)
-                      */
-                sexeSelection
-                        
+                    HStack{
+                        Text("Weight :")
+                            .font(.custom(customFont, size: 20))
+                           // .bold()
+                            .foregroundColor(.black)
+                        WeightPicker(kilos: $kilos, grams: $grams, unitOfMeasure: $unitOfMeasure)
+                                            .frame(height: 150) // Adjust the height as needed
+                                            .clipped()
+                                            .padding(.vertical, 8)
+                    }
+                    
+                    
+                }
+                
             }
-            
+            HStack{
+                Button(action: {
+                    
+                }) {
+                    Text("Save")
+                        .foregroundColor(.white)
+                        .font(.custom(customFont, size: 40))
+                        .bold()
+                    
+                }
+                .frame(maxWidth: 200)
+                .padding()
+                .background(Color.themeBlue)
+                //.padding(.horizontal, 40)
+                .cornerRadius(30)
+            }
         }.padding()
+            .padding(.horizontal,30)
     }
     private var typeSelection: some View {
         HStack {
-            Spacer()
+           // Spacer()
             ForEach(PetType.allCases) { type in
                 Button(action: {
                     selectedType = type
@@ -140,8 +149,8 @@ struct AddNewPetForm: View {
                     Image(type.rawValue)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 150,height: 150)
-                        .background(Color.themeLightBlue)
+                        .frame(width: 80,height: 80)
+                        //.background(Color.themeLightBlue)
                         .clipShape(Circle())
                         .overlay(
                             selectedType == type
@@ -150,7 +159,7 @@ struct AddNewPetForm: View {
                         )
                     
                 }
-                Spacer()
+                //Spacer()
             }
             
             
@@ -158,7 +167,7 @@ struct AddNewPetForm: View {
     }
     private var sexeSelection: some View {
         HStack {
-            Spacer()
+           // Spacer()
             ForEach(Sexe.allCases) { sexe in
                 Button(action: {
                     selectedSexe = sexe
@@ -166,7 +175,7 @@ struct AddNewPetForm: View {
                     Image(sexe.rawValue)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 150,height: 150)
+                        .frame(width: 80,height: 80)
                        // .background(Color.themeLightBlue)
                         .clipShape(Circle())
                         .overlay(
@@ -176,11 +185,33 @@ struct AddNewPetForm: View {
                         )
                     
                 }
-                Spacer()
+               // Spacer()
             }
             
             
         }.padding()
+    }
+    private var medicalInfo: some View {
+        VStack(alignment:.leading,spacing: 20){
+            Text("Medical Informations")
+                .font(.custom(customFont, size: 30))
+               // .bold()
+                .foregroundColor(.black)
+     
+            CustomToggle(label: "Neutered", isToggle: $isAlergic)
+            CustomToggle(label: "Allergies", isToggle: $isAlergic)
+            CustomToggle(label: "Sick", isToggle: $isAlergic)
+            DatePicker(
+                           "Last Vaccination Date",
+                           selection: $petBirthDate,
+                           displayedComponents: .date
+                       )
+                       .padding()
+                       .background(Color.themeSecondary)
+                       .cornerRadius(30)
+                       .shadow(radius: 1)
+                    
+        }
     }
     
 }
