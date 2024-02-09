@@ -10,7 +10,6 @@ import SwiftUI
 struct AddNewPetForm: View {
     let screenWidth:CGFloat=Constants.screenWidth
     let screenHeight:CGFloat=Constants.screenHeight
-    @State private var value: String=""
     enum Sexe: String, CaseIterable, Identifiable {
             case male, female
             var id: Self { self }
@@ -19,26 +18,7 @@ struct AddNewPetForm: View {
             case dog, cat
             var id: Self { self }
         }
-    @State private var selectedSexe: Sexe = .male
-    @State private var selectedType: PetType = .dog
-    @State private var selectedBreed: String = ""
-    @State private var petBirthDate: Date = Date()
-    @State private var isAlergic: Bool = false
-    @State private var isNeutered: Bool = false
-    @State private var isSick: Bool = false
-    @State private var kilos: Int = 0
-    @State private var grams: Int = 0
-    @State private var unitOfMeasure: String = "kg"
-    let dogBreeds = ["Labrador Retriever", "German Shepherd", "Golden Retriever"]
-        let catBreeds = ["Persian", "Maine Coon", "Siamese"]
-    var breedOptions: [String] {
-            switch selectedType {
-            case .dog:
-                return dogBreeds
-            case .cat:
-                return catBreeds
-            }
-        }
+    @StateObject private var viewModel = AddNewPetFormViewModel()
     
     var body: some View {
         VStack(spacing: screenWidth/16){
@@ -65,7 +45,7 @@ struct AddNewPetForm: View {
                     
                     Button(action: {
                         // Action to perform when the button is tapped
-                        print(selectedSexe)
+                        print(viewModel.selectedSexe)
                     }) {
                         Image(systemName: "camera")
                             .resizable()
@@ -92,7 +72,7 @@ struct AddNewPetForm: View {
                 .foregroundColor(.black)
             
             
-            CustomTF(hint: "Enter your pet name", label:"Name", value: $value)
+            CustomTF(hint: "Enter your pet name", label:"Name", value: $viewModel.petName)
                 .padding(.top,30)
             HStack{
                 typeSelection
@@ -100,8 +80,8 @@ struct AddNewPetForm: View {
                 sexeSelection
             }
             
-            Picker("Breed", selection: $selectedBreed) {
-                ForEach(breedOptions, id: \.self) { breed in
+            Picker("Breed", selection: $viewModel.selectedBreed) {
+                ForEach(viewModel.breedOptions, id: \.self) { breed in
                     Text(breed)
                 }
             }
@@ -111,7 +91,7 @@ struct AddNewPetForm: View {
             .shadow(radius: 1)
             DatePicker(
                 "Birth Date",
-                selection: $petBirthDate,
+                selection: $viewModel.petBirthDate,
                 displayedComponents: .date
             )
             .padding()
@@ -123,7 +103,7 @@ struct AddNewPetForm: View {
                     .font(.custom(Constants.customFont, size: 20))
                    // .bold()
                     .foregroundColor(.black)
-                WeightPicker(kilos: $kilos, grams: $grams, unitOfMeasure: $unitOfMeasure)
+                WeightPicker(kilos: $viewModel.kilos, grams: $viewModel.grams, unitOfMeasure: $viewModel.unitOfMeasure)
                                     .frame(height: 150) // Adjust the height as needed
                                     .clipped()
                                     .padding(.vertical, 8)
@@ -136,7 +116,7 @@ struct AddNewPetForm: View {
         HStack {
             ForEach(PetType.allCases) { type in
                 Button(action: {
-                    selectedType = type
+                    viewModel.selectedType = type
                 }) {
                     Image(type.rawValue)
                         .resizable()
@@ -145,7 +125,7 @@ struct AddNewPetForm: View {
                         //.background(Color.themeLightBlue)
                         .clipShape(Circle())
                         .overlay(
-                            selectedType == type
+                            viewModel.selectedType == type
                             ? Circle().stroke(Color.themeBlue, lineWidth: 4)
                             : Circle().stroke(.clear, lineWidth: 0)
                         )
@@ -160,7 +140,7 @@ struct AddNewPetForm: View {
         HStack {
             ForEach(Sexe.allCases) { sexe in
                 Button(action: {
-                    selectedSexe = sexe
+                    viewModel.selectedSexe = sexe
                 }) {
                     Image(sexe.rawValue)
                         .resizable()
@@ -169,7 +149,7 @@ struct AddNewPetForm: View {
                        // .background(Color.themeLightBlue)
                         .clipShape(Circle())
                         .overlay(
-                            selectedSexe == sexe
+                            viewModel.selectedSexe == sexe
                             ? Circle().stroke(Color.themeBlue, lineWidth: 4)
                             : Circle().stroke(.clear, lineWidth: 0)
                         )
@@ -186,12 +166,12 @@ struct AddNewPetForm: View {
                 .font(.custom(Constants.customFont, size: 30))
                 .foregroundColor(.black)
      
-            CustomToggle(label: "Neutered", isToggle: $isNeutered)
-            CustomToggle(label: "Allergies", isToggle: $isAlergic)
+            CustomToggle(label: "Neutered", isToggle: $viewModel.isNeutered)
+            CustomToggle(label: "Allergies", isToggle: $viewModel.isAlergic)
          //   CustomToggle(label: "Sick", isToggle: $isAlergic)
             DatePicker(
                            "Last Vaccination Date",
-                           selection: $petBirthDate,
+                           selection: $viewModel.lastVaccinationDate,
                            displayedComponents: .date
                        )
                        .padding()
@@ -204,6 +184,8 @@ struct AddNewPetForm: View {
     private var saveButton: some View {
         Button(action: {
             // Save action
+            viewModel.savePet()
+            print("saved")
         }) {
             Text("Save")
                 .font(.custom(Constants.customFont, size: 40))
