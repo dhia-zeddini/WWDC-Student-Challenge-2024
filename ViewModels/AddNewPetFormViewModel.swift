@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Combine
+import SwiftUI
 class AddNewPetFormViewModel: ObservableObject {
     
     @Published var petName: String = ""
@@ -20,7 +22,13 @@ class AddNewPetFormViewModel: ObservableObject {
     @Published var grams: Int = 0
     @Published var unitOfMeasure: String = "kg"
     @Published var lastVaccinationDate: Date = Date()
-
+    
+    
+    @Published var showSheet: Bool = false
+    @Published var activeSheet: AddNewPetForm.ActiveSheet?
+    @Published var selectedImage: UIImage?
+    
+    
     let dogBreeds = ["Labrador Retriever", "German Shepherd", "Golden Retriever"]
     let catBreeds = ["Persian", "Maine Coon", "Siamese"]
 
@@ -32,10 +40,32 @@ class AddNewPetFormViewModel: ObservableObject {
             return catBreeds
         }
     }
+    
+    //keyboard
+    @Published var keyboardHeight: CGFloat = 0
+    private var cancellables = Set<AnyCancellable>()
+    
+
     private var service: PetDataService
 
         init(service: PetDataService = PetDataService()) {
             self.service = service
+            // Keyboard show
+            NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
+                       .map { notification -> CGFloat in
+                           if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+                               return keyboardSize.height
+                           }
+                           return 0
+                       }
+                       .assign(to: \.keyboardHeight, on: self)
+                       .store(in: &cancellables)
+
+                   // Keyboard hide
+                   NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
+                       .map { _ in CGFloat(0) }
+                       .assign(to: \.keyboardHeight, on: self)
+                       .store(in: &cancellables)
         }
     func savePet() {
         let weight = "\(kilos).\(grams)"+unitOfMeasure

@@ -31,6 +31,11 @@ let package = Package(
                 .landscapeRight,
                 .landscapeLeft,
                 .portraitUpsideDown(.when(deviceFamilies: [.pad]))
+            ],
+            capabilities: [
+                .camera(purposeString: "This app requires access to the camera to allow you to take and upload photos of your pets.This app requires access to the camera to allow you to take and upload photos of your pets."),
+                .photoLibrary(purposeString: "This app requires access to your photo library to allow you to choose and upload photos of your pets."),
+                .fileAccess(.pictureFolder, mode: .readOnly)
             ]
         )
     ],

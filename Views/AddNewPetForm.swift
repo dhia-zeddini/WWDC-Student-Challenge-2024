@@ -18,6 +18,14 @@ struct AddNewPetForm: View {
             case dog, cat
             var id: Self { self }
         }
+    enum ActiveSheet: Identifiable {
+        case photoPicker, camera
+
+        var id: Int {
+            self.hashValue
+        }
+    }
+
     @StateObject private var viewModel = AddNewPetFormViewModel()
     
     var body: some View {
@@ -29,23 +37,51 @@ struct AddNewPetForm: View {
        saveButton
         }.padding()
             .padding(.horizontal,30)
+            .actionSheet(isPresented: $viewModel.showSheet) {
+                            ActionSheet(title: Text("Select Image"), message: Text("Choose a source"), buttons: [
+                                .default(Text("Camera")) {
+                                    viewModel.activeSheet = .camera
+                                },
+                                .default(Text("Gallery")) {
+                                    viewModel.activeSheet = .photoPicker
+                                },
+                                .cancel()
+                            ])
+                        }
+                        .sheet(item: $viewModel.activeSheet) { item in
+                            switch item {
+                            case .camera:
+                                ImagePicker(selectedImage: $viewModel.selectedImage, sourceType: .camera)
+                            case .photoPicker:
+                                ImagePicker(selectedImage: $viewModel.selectedImage, sourceType: .photoLibrary)
+                            }
+                        }
     }
     private var petImageSection: some View {
             VStack(spacing: 30){
                 ZStack {
-                    
-                    Image("dog-image")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: screenWidth / 3, height: screenWidth / 3)
-                        .clipShape(Circle())
-                        .overlay(
-                            Circle().stroke(Color.black, lineWidth: 4)
-                        )
-                    
+                    if let selectedImage = viewModel.selectedImage {
+                                Image(uiImage: selectedImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: screenWidth / 3, height: screenWidth / 3)
+                                    .clipShape(Circle())
+                                    .overlay(
+                                        Circle().stroke(Color.themeBlue, lineWidth: 4)
+                                    )
+                            } else {
+                                // Display the default "dog-image" if no image has been selected
+                                Image("dog-image")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: screenWidth / 3, height: screenWidth / 3)
+                                    .clipShape(Circle())
+                                    .overlay(
+                                        Circle().stroke(Color.themeBlue, lineWidth: 4)
+                                    )
+                            }
                     Button(action: {
-                        // Action to perform when the button is tapped
-                        print(viewModel.selectedSexe)
+                        viewModel.showSheet = true
                     }) {
                         Image(systemName: "camera")
                             .resizable()
@@ -59,10 +95,7 @@ struct AddNewPetForm: View {
                         .offset(x: screenWidth / 9, y: screenWidth / 8)
                 }
                 medicalInfo
-                
-                
             }
-        
     }
     private var petDetailsSection: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -86,6 +119,7 @@ struct AddNewPetForm: View {
                 }
             }
             .pickerStyle(.wheel)
+            .frame(minHeight: 100)
             .background(RoundedRectangle(cornerRadius:50)
                 .fill(Color.themeSecondary))
             .shadow(radius: 1)
@@ -104,7 +138,7 @@ struct AddNewPetForm: View {
                    // .bold()
                     .foregroundColor(.black)
                 WeightPicker(kilos: $viewModel.kilos, grams: $viewModel.grams, unitOfMeasure: $viewModel.unitOfMeasure)
-                                    .frame(height: 150) // Adjust the height as needed
+                    .frame(maxHeight: 100)
                                     .clipped()
                                     .padding(.vertical, 8)
             }
