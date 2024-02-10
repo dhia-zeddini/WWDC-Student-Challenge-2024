@@ -47,9 +47,11 @@ class AddNewPetFormViewModel: ObservableObject {
     
 
     private var service: PetDataService
+    private var imageService: ImageStorageService
 
-        init(service: PetDataService = PetDataService()) {
+    init(service: PetDataService = PetDataService(),imageService: ImageStorageService = ImageStorageService()) {
             self.service = service
+            self.imageService = imageService
             // Keyboard show
             NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
                        .map { notification -> CGFloat in
@@ -69,7 +71,7 @@ class AddNewPetFormViewModel: ObservableObject {
         }
     func savePet() {
         let weight = "\(kilos).\(grams)"+unitOfMeasure
-        let imagePth="test.png"
+        let imagePth=imageService.saveImageToDocumentDirectory(selectedImage) ?? "dog-image"
         service.savePet(name: "petName", type: selectedType.rawValue, sexe: selectedSexe.rawValue, breed: selectedBreed, birthDate: petBirthDate,weight: weight, imagePath: imagePth, isNeutered: isNeutered, isAllergic: isAlergic, lastVaccinationDate: lastVaccinationDate)
     }
 }
