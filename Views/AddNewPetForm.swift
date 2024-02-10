@@ -56,6 +56,10 @@ struct AddNewPetForm: View {
                                 ImagePicker(selectedImage: $viewModel.selectedImage, sourceType: .photoLibrary)
                             }
                         }
+        NavigationLink(destination: HomeView(), isActive: $viewModel.showHomeView) {
+                  EmptyView()
+              }
+              .isDetailLink(false)
     }
     private var petImageSection: some View {
             VStack(spacing: 30){
@@ -229,7 +233,9 @@ struct AddNewPetForm: View {
                 .background(Color.themeBlue)
                 .cornerRadius(30)
         }
+        
     }
+    
 }
 
 #Preview {

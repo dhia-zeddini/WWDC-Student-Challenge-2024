@@ -31,9 +31,6 @@ class PetDataService {
           pet.isNeutered = isNeutered
           pet.isAllergic = isAllergic
           pet.lastVaccinationDate = lastVaccinationDate
-          
-          // ...
-
           do {
               try context.save()
               print(" save pet succ")
@@ -41,4 +38,16 @@ class PetDataService {
               print("Failed to save pet: \(error)")
           }
       }
+    
+    func fetchAllPets() -> [Pet] {
+        let request = NSFetchRequest<Pet>(entityName: "Pet")
+        do {
+            let results = try context.fetch(request)
+            return results
+        } catch {
+            print("Error fetching pets: \(error)")
+            return []
+        }
+    }
+
 }

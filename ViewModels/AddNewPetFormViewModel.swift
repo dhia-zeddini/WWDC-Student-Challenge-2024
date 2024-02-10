@@ -28,6 +28,7 @@ class AddNewPetFormViewModel: ObservableObject {
     @Published var activeSheet: AddNewPetForm.ActiveSheet?
     @Published var selectedImage: UIImage?
     
+    @Published var showHomeView: Bool = false
     
     let dogBreeds = ["Labrador Retriever", "German Shepherd", "Golden Retriever"]
     let catBreeds = ["Persian", "Maine Coon", "Siamese"]
@@ -73,5 +74,7 @@ class AddNewPetFormViewModel: ObservableObject {
         let weight = "\(kilos).\(grams)"+unitOfMeasure
         let imagePth=imageService.saveImageToDocumentDirectory(selectedImage) ?? "dog-image"
         service.savePet(name: "petName", type: selectedType.rawValue, sexe: selectedSexe.rawValue, breed: selectedBreed, birthDate: petBirthDate,weight: weight, imagePath: imagePth, isNeutered: isNeutered, isAllergic: isAlergic, lastVaccinationDate: lastVaccinationDate)
+        showHomeView = true
+        print(service.fetchAllPets())
     }
 }

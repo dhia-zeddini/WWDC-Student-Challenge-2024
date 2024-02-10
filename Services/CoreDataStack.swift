@@ -12,7 +12,7 @@ class CoreDataStack {
     static let shared = CoreDataStack()
 
       lazy var persistentContainer: NSPersistentContainer = {
-          let model = self.createModel() // Ensure we create and set the model
+          let model = self.createModel() 
           let container = NSPersistentContainer(name: "PetModel", managedObjectModel: model)
           let description = NSPersistentStoreDescription()
           description.type = NSInMemoryStoreType
@@ -23,6 +23,10 @@ class CoreDataStack {
                   fatalError("Unresolved error \(error)")
               }
           }
+          container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+                 
+          container.viewContext.automaticallyMergesChangesFromParent = true
+          
           return container
       }()
     private func createModel() -> NSManagedObjectModel {
