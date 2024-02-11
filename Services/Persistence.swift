@@ -1,96 +1,98 @@
-//
-//  File.swift
-//  
-//
-//  Created by Zeddin Dhia on 9/2/2024.
-//
-
-import Foundation
+import SwiftUI
 import CoreData
-
-class CoreDataStack {
-    static let shared = CoreDataStack()
-
-      lazy var persistentContainer: NSPersistentContainer = {
-          let model = self.createModel() 
-          let container = NSPersistentContainer(name: "PetModel", managedObjectModel: model)
-          let description = NSPersistentStoreDescription()
-          description.type = NSInMemoryStoreType
-          container.persistentStoreDescriptions = [description]
-
-          container.loadPersistentStores { (_, error) in
-              if let error = error {
-                  fatalError("Unresolved error \(error)")
-              }
-          }
-          container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-                 
-          container.viewContext.automaticallyMergesChangesFromParent = true
-          
-          return container
-      }()
-    private func createModel() -> NSManagedObjectModel {
-        let model = NSManagedObjectModel()
+struct PersistenceController {
+    static let shared = PersistenceController()
+    
+    static var preview: PersistenceController = {
+        let result = PersistenceController(inMemory: true)
+        let viewContext = result.container.viewContext
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+        return result
+    }()
+    
+    let container: NSPersistentContainer
+    
+    init(inMemory: Bool = false) {
+        // Creating the entity
         let petEntity = NSEntityDescription()
         petEntity.name = "Pet"
-        petEntity.managedObjectClassName = NSStringFromClass(Pet.self)
-
+        petEntity.managedObjectClassName = "Pet"
+        
+       
         let nameAttribute = NSAttributeDescription()
         nameAttribute.name = "name"
-        nameAttribute.attributeType = .stringAttributeType
+        nameAttribute.type = .string
         nameAttribute.isOptional = false
 
         let typeAttribute = NSAttributeDescription()
         typeAttribute.name = "type"
-        typeAttribute.attributeType = .stringAttributeType
+        typeAttribute.type = .string
         typeAttribute.isOptional = false
         
         let sexeAttribute = NSAttributeDescription()
         sexeAttribute.name = "sexe"
-        sexeAttribute.attributeType = .stringAttributeType
+        sexeAttribute.type = .string
         sexeAttribute.isOptional = false
 
         let breedAttribute = NSAttributeDescription()
         breedAttribute.name = "breed"
-        breedAttribute.attributeType = .stringAttributeType
+        breedAttribute.type = .string
         breedAttribute.isOptional = false
 
         let birthDateAttribute = NSAttributeDescription()
         birthDateAttribute.name = "birthDate"
-        birthDateAttribute.attributeType = .dateAttributeType
+        birthDateAttribute.type = .date
         birthDateAttribute.isOptional = false
         
         let weightAttribute = NSAttributeDescription()
         weightAttribute.name = "weight"
-        weightAttribute.attributeType = .stringAttributeType
+        weightAttribute.type = .string
         weightAttribute.isOptional = false
         
         // ImagePath attribute
          let imageAttribute = NSAttributeDescription()
          imageAttribute.name = "imagePath"
-         imageAttribute.attributeType = .stringAttributeType
+         imageAttribute.type = .string
          imageAttribute.isOptional = false
         
          let isNeuteredAttribute = NSAttributeDescription()
          isNeuteredAttribute.name = "isNeutered"
-         isNeuteredAttribute.attributeType = .booleanAttributeType
+         isNeuteredAttribute.type = .boolean
          isNeuteredAttribute.isOptional = false
         
         let isAllergicAttribute = NSAttributeDescription()
         isAllergicAttribute.name = "isAllergic"
-        isAllergicAttribute.attributeType = .booleanAttributeType
+        isAllergicAttribute.type = .boolean
         isAllergicAttribute.isOptional = false
 
         let lastVaccinationDateAttribute = NSAttributeDescription()
         lastVaccinationDateAttribute.name = "lastVaccinationDate"
-        lastVaccinationDateAttribute.attributeType = .dateAttributeType
+        lastVaccinationDateAttribute.type = .date
         lastVaccinationDateAttribute.isOptional = false
         
         
          petEntity.properties = [nameAttribute, typeAttribute,sexeAttribute, breedAttribute,birthDateAttribute,weightAttribute, imageAttribute, isNeuteredAttribute,isAllergicAttribute,lastVaccinationDateAttribute]
 
+     
+       
+        let model = NSManagedObjectModel()
         model.entities = [petEntity]
-
-        return model
+        
+        
+        container = NSPersistentContainer(name: "PetCareApp", managedObjectModel: model)
+        if inMemory {
+            container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+        }
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        })
     }
 }

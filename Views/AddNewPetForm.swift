@@ -29,37 +29,39 @@ struct AddNewPetForm: View {
     @StateObject private var viewModel = AddNewPetFormViewModel()
     
     var body: some View {
-        VStack(spacing: screenWidth/16){
-            HStack (spacing: screenWidth/16){
-                petImageSection
-                petDetailsSection
-            }
-       saveButton
-        }.padding()
-            .padding(.horizontal,30)
-            .actionSheet(isPresented: $viewModel.showSheet) {
-                            ActionSheet(title: Text("Select Image"), message: Text("Choose a source"), buttons: [
-                                .default(Text("Camera")) {
-                                    viewModel.activeSheet = .camera
-                                },
-                                .default(Text("Gallery")) {
-                                    viewModel.activeSheet = .photoPicker
-                                },
-                                .cancel()
-                            ])
-                        }
-                        .sheet(item: $viewModel.activeSheet) { item in
-                            switch item {
-                            case .camera:
-                                ImagePicker(selectedImage: $viewModel.selectedImage, sourceType: .camera)
-                            case .photoPicker:
-                                ImagePicker(selectedImage: $viewModel.selectedImage, sourceType: .photoLibrary)
-                            }
-                        }
-        NavigationLink(destination: HomeView(), isActive: $viewModel.showHomeView) {
-                  EmptyView()
-              }
-              .isDetailLink(false)
+        NavigationStack{
+            VStack(spacing: screenWidth/16){
+                HStack (spacing: screenWidth/16){
+                    petImageSection
+                    petDetailsSection
+                }
+                saveButton
+                NavigationLink(destination: HomeView(), isActive: $viewModel.showHomeView) {
+                          EmptyView()
+                      }
+                      .isDetailLink(false)
+            }.padding()
+                .padding(.horizontal,30)
+                .actionSheet(isPresented: $viewModel.showSheet) {
+                    ActionSheet(title: Text("Select Image"), message: Text("Choose a source"), buttons: [
+                        .default(Text("Camera")) {
+                            viewModel.activeSheet = .camera
+                        },
+                        .default(Text("Gallery")) {
+                            viewModel.activeSheet = .photoPicker
+                        },
+                        .cancel()
+                    ])
+                }
+                .sheet(item: $viewModel.activeSheet) { item in
+                    switch item {
+                    case .camera:
+                        ImagePicker(selectedImage: $viewModel.selectedImage, sourceType: .camera)
+                    case .photoPicker:
+                        ImagePicker(selectedImage: $viewModel.selectedImage, sourceType: .photoLibrary)
+                    }
+                }
+        }
     }
     private var petImageSection: some View {
             VStack(spacing: 30){
@@ -205,7 +207,7 @@ struct AddNewPetForm: View {
                 .foregroundColor(.black)
      
             CustomToggle(label: "Neutered", isToggle: $viewModel.isNeutered)
-            CustomToggle(label: "Allergies", isToggle: $viewModel.isAlergic)
+            CustomToggle(label: "Allergies", isToggle: $viewModel.isAllergic)
          //   CustomToggle(label: "Sick", isToggle: $isAlergic)
             DatePicker(
                            "Last Vaccination Date",

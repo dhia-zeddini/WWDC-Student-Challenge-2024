@@ -7,30 +7,33 @@
 
 import Foundation
 import SwiftUI
+import CoreData
 
 class BottomPetsListViewModel: ObservableObject {
     @Published var pets: [Pet] = []
     @Published var selectedPet: Pet?
-    private let petDataService: PetDataService
     private var imageService: ImageStorageService
+     
+    private var viewContext: NSManagedObjectContext
     
-    init(petDataService: PetDataService = PetDataService(),imageService: ImageStorageService = ImageStorageService()) {
-        self.petDataService = petDataService
+    init(imageService: ImageStorageService = ImageStorageService()) {
+        self.viewContext = PersistenceController.shared.container.viewContext
         self.imageService = imageService
         fetchPets()
     }
     
     func fetchPets() {
-        pets = petDataService.fetchAllPets()
-        print(pets)
-        if(!pets.isEmpty){
-            selectedPet = pets[0]
+        let request = NSFetchRequest<Pet>(entityName: "Pet")
+        do {
+            pets = try viewContext.fetch(request)
+        } catch {
+            print("Failed to fetch tasks: \(error)")
         }
-        
     }
+
     func loadImageFromPath(_ path: String?) -> UIImage {
         guard let path = path, let image = imageService.loadImageFromDocumentDirectory(path: path) else {
-            return UIImage(named: "defaultPlaceholder") ?? UIImage()
+            return UIImage(named: "dog-image") ?? UIImage()
         }
         return image
     }
