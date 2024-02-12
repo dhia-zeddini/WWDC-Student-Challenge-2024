@@ -26,6 +26,9 @@ class BottomPetsListViewModel: ObservableObject {
         let request = NSFetchRequest<Pet>(entityName: "Pet")
         do {
             pets = try viewContext.fetch(request)
+            if let firstPet = pets.first {
+                selectedPet = firstPet
+            }
         } catch {
             print("Failed to fetch tasks: \(error)")
         }

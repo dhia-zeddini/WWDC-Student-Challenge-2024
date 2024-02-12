@@ -8,18 +8,18 @@
 import SwiftUI
 
 struct HomeView: View {
+    @StateObject private var viewModel = BottomPetsListViewModel()
+    @State var selectedPet: Pet?
     var body: some View {
         VStack {
-               Text("Hello, World!")
-               Text("Hello, World!")
-               Text("Hello, World!")
-               Text("Hello, World!")
-               Text("Hello, World!")
+            Text(selectedPet?.name ?? "name")
+            Text(selectedPet?.type ?? "type")
+            Text(selectedPet?.breed ?? "breed")
                    
                
                Spacer() 
                
-            BottomPetsList()
+            BottomPetsList(selectedPetBinding: $selectedPet)
            }
     }
 }

@@ -116,10 +116,10 @@ class AddNewPetFormViewModel: ObservableObject {
         
         do {
             try viewContext.save()
-            alertTitle = "Success"
+           /* alertTitle = "Success"
             alertMessage = "The pet has been added successfully."
             showAlert = true
-            showHomeView = true
+            showHomeView = true*/
         } catch {
             alertTitle = "Error"
             alertMessage = "There was an error saving the pet. Please try again."

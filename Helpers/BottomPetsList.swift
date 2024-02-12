@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BottomPetsList: View {
     @StateObject private var viewModel = BottomPetsListViewModel()
-        @State var selectedPet: Pet?
+        @Binding var selectedPetBinding: Pet?
         @State var showAddNewPetForm: Bool = false
         let iconSize: CGFloat = 120
 
@@ -20,7 +20,7 @@ struct BottomPetsList: View {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 40) {
                                 ForEach(viewModel.pets, id: \.self) { pet in
-                                    PetButton(pet: pet, selectedPet: $selectedPet, iconSize: iconSize)
+                                    PetButton(pet: pet, selectedPet: $viewModel.selectedPet, iconSize: iconSize)
                                 }
                             }
                             .padding()
@@ -49,6 +49,7 @@ struct BottomPetsList: View {
             }
             .onAppear {
                 viewModel.fetchPets()
+                selectedPetBinding = viewModel.selectedPet
             }
             NavigationLink(destination: AddNewPetForm(), isActive: $showAddNewPetForm) {
                       EmptyView()
@@ -59,6 +60,8 @@ struct BottomPetsList: View {
         private func PetButton(pet: Pet, selectedPet: Binding<Pet?>, iconSize: CGFloat) -> some View {
             Button(action: {
                 selectedPet.wrappedValue = pet
+                selectedPetBinding = pet
+                print(viewModel.selectedPet?.name)
             }) {
                 VStack {
                     // Assuming you have a method to convert imagePath to UIImage
