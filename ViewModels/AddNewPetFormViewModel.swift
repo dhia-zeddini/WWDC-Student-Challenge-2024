@@ -52,7 +52,9 @@ class AddNewPetFormViewModel: ObservableObject {
     private var imageService: ImageStorageService
 
     
-   
+    @Published var showAlert: Bool = false
+    @Published var alertTitle: String = ""
+    @Published var alertMessage: String = ""
 
   
     init(imageService: ImageStorageService = ImageStorageService()) {
@@ -76,25 +78,54 @@ class AddNewPetFormViewModel: ObservableObject {
                        .store(in: &cancellables)
         }
     func savePet() {
-        let weight = "\(kilos).\(grams)"+unitOfMeasure
-        let imagePath=imageService.saveImageToDocumentDirectory(selectedImage) ?? "dog-image"
+        guard !petName.isEmpty, !selectedBreed.isEmpty, kilos != 0 else {
+            alertTitle = "Error"
+            alertMessage = "Please fill in all required fields."
+            showAlert = true
+            return
+        }
+
+        let weight = "\(kilos).\(grams)" + unitOfMeasure
+        var imagePath: String? = nil
+        if let selectedImage = selectedImage {
+            imagePath = imageService.saveImageToDocumentDirectory(selectedImage)
+            if imagePath == nil {
+                alertTitle = "Error"
+                alertMessage = "Failed to save the image. Please try again."
+                showAlert = true
+                return
+            }
+        } else {
+            alertTitle = "Error"
+            alertMessage = "Please select an image for the pet."
+            showAlert = true
+            return
+        }
+
         let pet = Pet(context: viewContext)
-                  pet.name = petName
-                  pet.type = selectedType.rawValue
-                  pet.sexe = selectedSexe.rawValue
-                  pet.breed = selectedBreed
-                  pet.birthDate = petBirthDate
-                  pet.weight = weight
-                  pet.imagePath = imagePath
-                  pet.isNeutered = isNeutered
-                  pet.isAllergic = isAllergic
-                  pet.lastVaccinationDate = lastVaccinationDate
-                  do {
-                      try viewContext.save()
-                      print(" save pet succ")
-                      showHomeView = true
-                  } catch {
-                      print("Failed to save pet: \(error)")
-                  }
+        pet.name = petName
+        pet.type = selectedType.rawValue
+        pet.sexe = selectedSexe.rawValue
+        pet.breed = selectedBreed
+        pet.birthDate = petBirthDate
+        pet.weight = weight
+        pet.imagePath = imagePath ?? "dog-image"
+        pet.isNeutered = isNeutered
+        pet.isAllergic = isAllergic
+        pet.lastVaccinationDate = lastVaccinationDate
+        
+        do {
+            try viewContext.save()
+            alertTitle = "Success"
+            alertMessage = "The pet has been added successfully."
+            showAlert = true
+            showHomeView = true
+        } catch {
+            alertTitle = "Error"
+            alertMessage = "There was an error saving the pet. Please try again."
+            showAlert = true
+            print("Failed to save pet: \(error)")
+        }
     }
+
 }

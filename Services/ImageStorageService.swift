@@ -13,31 +13,38 @@ class ImageStorageService {
 
     init() {}
 
-    func saveImageToDocumentDirectory(_ selectedImage: UIImage?) -> String? {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        let fileName = UUID().uuidString
-        let fileURL = documentsDirectory?.appendingPathComponent("\(fileName).png")
+    // Save the image and return the filename
+    func saveImageToDocumentDirectory(_ image: UIImage) -> String? {
+        guard let data = image.jpegData(compressionQuality: 1) else { return nil }
+        let fileName = UUID().uuidString + ".png"
+        let fileURL = getDocumentsDirectory().appendingPathComponent(fileName)
         
-        if let data = selectedImage?.pngData(), let fileURL = fileURL {
-            do {
-                try data.write(to: fileURL)
-                return fileURL.path 
-            } catch {
-                print("Unable to save image to document directory", error)
-            }
+        do {
+            try data.write(to: fileURL)
+            return fileName
+        } catch {
+            print("Error saving image: \(error)")
+            return nil
         }
-        return nil
     }
-    
-    func loadImageFromDocumentDirectory(path: String) -> UIImage? {
-        let fileURL = URL(fileURLWithPath: path)
+
+    // Get the path for the image with the given filename
+    func loadImageFromDocumentDirectory(fileName: String) -> UIImage? {
+        let fileURL = getDocumentsDirectory().appendingPathComponent(fileName)
         do {
             let imageData = try Data(contentsOf: fileURL)
             return UIImage(data: imageData)
         } catch {
-            print("Error loading image : \(error)")
+            print("Error loading image: \(error)")
+            return nil
         }
-        return nil
     }
+
+    // Helper method to get the documents directory
+    func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
+
 
 }

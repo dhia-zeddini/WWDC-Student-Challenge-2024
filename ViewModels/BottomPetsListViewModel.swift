@@ -32,7 +32,7 @@ class BottomPetsListViewModel: ObservableObject {
     }
 
     func loadImageFromPath(_ path: String?) -> UIImage {
-        guard let path = path, let image = imageService.loadImageFromDocumentDirectory(path: path) else {
+        guard let path = path, let image = imageService.loadImageFromDocumentDirectory(fileName: path) else {
             return UIImage(named: "dog-image") ?? UIImage()
         }
         return image

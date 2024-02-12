@@ -77,7 +77,7 @@ struct AddNewPetForm: View {
                                     )
                             } else {
                                 // Display the default "dog-image" if no image has been selected
-                                Image("dog-image")
+                                Image("cat")
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: screenWidth / 3, height: screenWidth / 3)
@@ -234,6 +234,8 @@ struct AddNewPetForm: View {
                 .frame(maxWidth: 200)
                 .background(Color.themeBlue)
                 .cornerRadius(30)
+        }.alert(isPresented: $viewModel.showAlert) {
+            Alert(title: Text(viewModel.alertTitle), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
         }
         
     }
