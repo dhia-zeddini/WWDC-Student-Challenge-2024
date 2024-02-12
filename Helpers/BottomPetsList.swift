@@ -90,7 +90,7 @@ struct BottomPetsList: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: iconSize, height: iconSize)
                         .background(.white)
-                        .foregroundColor(.blue)
+                        .foregroundColor(Color.themeBlue)
                         .clipShape(Circle())
                 }
                 

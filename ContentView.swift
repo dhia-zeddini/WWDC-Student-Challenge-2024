@@ -6,7 +6,7 @@ struct ContentView: View {
             ZStack{
                 Color.themePrimary
                     .ignoresSafeArea()
-                HomeView()
+                LandingView()
             }
         }
     }
