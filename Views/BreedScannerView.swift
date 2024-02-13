@@ -9,7 +9,8 @@ import SwiftUI
 
 struct BreedScannerView: View {
     var body: some View {
-        Text("BreedScannerView")
+        CameraPreview()
+                    .edgesIgnoringSafeArea(.all)
     }
 }
 

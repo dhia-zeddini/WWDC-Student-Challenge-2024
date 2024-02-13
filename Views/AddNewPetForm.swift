@@ -77,7 +77,7 @@ struct AddNewPetForm: View {
                                     )
                             } else {
                                 // Display the default "dog-image" if no image has been selected
-                                Image("cat")
+                                Image("dog-image")
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: screenWidth / 3, height: screenWidth / 3)
