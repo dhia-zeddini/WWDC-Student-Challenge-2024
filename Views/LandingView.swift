@@ -9,6 +9,11 @@ import SwiftUI
 
 struct LandingView: View {
     @State private var selectedTab = 1
+    @State private var colors: [Color] = [
+        .green,
+        .red,
+        .blue
+    ]
     var body: some View {
         VStack{
             HStack(spacing: 50) {
@@ -36,8 +41,37 @@ struct LandingView: View {
             .shadow(radius: 2)
             TabView(selection: $selectedTab) {
                 CustomARViewRepresentable()
-                    .ignoresSafeArea()
                     .tag(0)
+                    .ignoresSafeArea()
+                    .overlay(alignment: .bottom){
+                        ScrollView(.horizontal){
+                            HStack{
+                                Button{
+                                    ARManager.shared.actionStreem.send(.removeAllAnchors)
+                                }label: {
+                                    Image(systemName: "trash")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 30,height: 30)
+                                        .padding()
+                                        .background(.regularMaterial)
+                                        .cornerRadius(16)
+                                }
+                                
+                                ForEach(colors, id: \.self){ color in
+                                    Button{
+                                        ARManager.shared.actionStreem.send(.placeBlock(color: color))
+                                    }label: {
+                                       color
+                                            .frame(width: 30,height: 30)
+                                            .padding()
+                                            .background(.regularMaterial)
+                                            .cornerRadius(16)
+                                    }
+                                }
+                            }.padding()
+                        }
+                    }
                 HomeView()
                     .tag(1)
               //  BreedScannerView()

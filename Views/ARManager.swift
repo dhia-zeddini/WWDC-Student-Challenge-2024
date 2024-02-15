@@ -5,4 +5,11 @@
 //  Created by Zeddin Dhia on 15/2/2024.
 //
 
-import Foundation
+import Combine
+
+class ARManager{
+    static let shared = ARManager()
+    private init(){}
+    
+    var actionStreem = PassthroughSubject<ARAction, Never>()
+}
