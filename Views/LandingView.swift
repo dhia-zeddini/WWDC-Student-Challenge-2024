@@ -35,12 +35,13 @@ struct LandingView: View {
            // .frame(height: 90)
             .shadow(radius: 2)
             TabView(selection: $selectedTab) {
-                ARView()
+                CustomARViewRepresentable()
+                    .ignoresSafeArea()
                     .tag(0)
                 HomeView()
                     .tag(1)
-                BreedScannerView()
-                    .tag(2)
+              //  BreedScannerView()
+                //    .tag(2)
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         }.padding(.top, 10)

@@ -9,8 +9,13 @@ import SwiftUI
 
 struct BreedScannerView: View {
     var body: some View {
-        CameraPreview()
-                    .edgesIgnoringSafeArea(.all)
+        if #available(macOS 14.0, iOS 17.0, tvOS 17.0, *){
+            CameraPreview()
+                        .edgesIgnoringSafeArea(.all)
+        }else{
+            Text("This feacher is available only in macOS 14.0, iOS 17.0, tvOS 17.0")
+        }
+        
     }
 }
 

@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct ARView: View {
+struct ARVieww: View {
     var body: some View {
-        Text("ARView")
+        CustomARViewRepresentable()
+            .ignoresSafeArea() 
     }
 }
 

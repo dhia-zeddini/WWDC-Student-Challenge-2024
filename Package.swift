@@ -17,7 +17,7 @@ let package = Package(
             name: "WWDC2024",
             targets: ["AppModule"],
             bundleIdentifier: "com.dhia.wwdc.WWDC2024",
-            teamIdentifier: "LD4H6PQ5AA",
+            teamIdentifier: "L59WRJUK24",
             displayVersion: "1.0",
             bundleVersion: "1",
             appIcon: .placeholder(icon: .cloud),
@@ -42,7 +42,10 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "AppModule",
-            path: "."
+            path: ".",
+            resources: [
+                .process("Resources")
+            ]
         )
     ]
 )
