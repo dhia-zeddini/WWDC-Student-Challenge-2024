@@ -47,7 +47,7 @@ struct LandingView: View {
                         ScrollView(.horizontal){
                             HStack{
                                 Button{
-                                    ARManager.shared.actionStreem.send(.removeAllAnchors)
+                                    ARManager.shared.actionStream.send(.removeAllAnchors)
                                 }label: {
                                     Image(systemName: "trash")
                                         .resizable()
@@ -60,7 +60,7 @@ struct LandingView: View {
                                 
                                 ForEach(colors, id: \.self){ color in
                                     Button{
-                                        ARManager.shared.actionStreem.send(.placeBlock(color: color))
+                                        ARManager.shared.actionStream.send(.placeBlock(color: color))
                                     }label: {
                                        color
                                             .frame(width: 30,height: 30)

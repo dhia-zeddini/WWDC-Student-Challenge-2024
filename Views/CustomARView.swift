@@ -12,22 +12,91 @@ import Combine
 
 class CustomARView: ARView{
     
-    required init(frame frameRect: CGRect){
-        super.init(frame: frameRect)
+    var currentEntity: ModelEntity?
+       required init(frame frameRect: CGRect) {
+           super.init(frame: frameRect)
+           setupGestures()
+       }
+       
+       required init?(coder decoder: NSCoder) {
+           fatalError("init(coder:) has not been implemented")
+       }
+       
+       convenience init() {
+           self.init(frame: UIScreen.main.bounds)
+           subscribeToActionStream()
+       }
+       
+       private func setupGestures() {
+           let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
+           self.addGestureRecognizer(pinchGesture)
+           
+           let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+           self.addGestureRecognizer(panGesture)
+           
+           let rotationGesture = UIRotationGestureRecognizer(target: self, action: #selector(handleRotation(_:)))
+           self.addGestureRecognizer(rotationGesture)
+
+       }
+       @objc private func handlePinch(_ sender: UIPinchGestureRecognizer) {
+           guard let entity = currentEntity else { return }
+           
+           if sender.state == .changed {
+               let scale = sender.scale
+               entity.scale *= Float(scale)
+               sender.scale = 1.0 // Reset the scale so that the pinch is relative to the new size
+           }
+       }
+    @objc private func handlePan(_ sender: UIPanGestureRecognizer) {
+        let location = sender.location(in: self)
+        
+        switch sender.state {
+        case .began, .changed:
+            guard let hitTestResult = self.hitTest(location, types: [.existingPlaneUsingExtent]).first else { return }
+            
+            print(hitTestResult.type)
+            // Convert the hit test result into a world position
+            let worldTransform = hitTestResult.worldTransform
+            let newPosition = SIMD3<Float>(worldTransform.columns.3.x, worldTransform.columns.3.y, worldTransform.columns.3.z)
+            
+            // Update the position of the current entity
+            currentEntity?.position = newPosition
+        default:
+            break
+        }
     }
-    
-     dynamic required init?(coder decoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+
+    @objc private func handleRotation(_ sender: UIRotationGestureRecognizer) {
+        guard let entity = currentEntity else { return }
+        
+        if sender.state == .changed {
+            // Y-axis rotation
+            let rotationY = simd_quatf(angle: Float(sender.rotation), axis: SIMD3<Float>(0, 0, 1))
+            entity.orientation = rotationY * entity.orientation
+            sender.rotation = 0
+        }
     }
-    convenience init(){
-        self.init(frame: UIScreen.main.bounds)
-        subscribeToActionStream()
-    }
-    
+
+
+       func placeBlock(ofColor color: Color) {
+           let block = MeshResource.generateBox(size: 0.3)
+           let material = SimpleMaterial(color: UIColor(color), isMetallic: false)
+           let entity = ModelEntity(mesh: block, materials: [material])
+           entity.name = "\(color)"
+           
+           let anchor = AnchorEntity(plane: .horizontal)
+           anchor.addChild(entity)
+           scene.addAnchor(anchor)
+           
+           // Keep a reference to the current entity to resize it later
+           currentEntity = entity
+
+          
+       }
     private var cancellables: Set<AnyCancellable> = []
     func subscribeToActionStream(){
         ARManager.shared
-            .actionStreem
+            .actionStream
             .sink{ [weak self] action in
                 switch action{
                 case .placeBlock(let color):
@@ -83,7 +152,7 @@ class CustomARView: ARView{
         
     }
     
-    func placeBlock(ofColor color: Color){
+   /* func placeBlock(ofColor color: Color){
         let block = MeshResource.generateBox(size: 0.3)
         let material = SimpleMaterial(color: UIColor(color) ,isMetallic: false)
         let entity = ModelEntity(mesh: block,materials: [material])
@@ -91,6 +160,6 @@ class CustomARView: ARView{
         let anchor = AnchorEntity(plane: .horizontal)
         anchor.addChild(entity)
         scene.addAnchor(anchor)
-    }
+    }*/
     
 }

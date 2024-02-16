@@ -11,5 +11,5 @@ class ARManager{
     static let shared = ARManager()
     private init(){}
     
-    var actionStreem = PassthroughSubject<ARAction, Never>()
+    var actionStream = PassthroughSubject<ARAction, Never>()
 }
