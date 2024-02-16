@@ -46,6 +46,13 @@ struct LandingView: View {
                     .overlay(alignment: .bottom){
                         ScrollView(.horizontal){
                             HStack{
+                                Button("Bed"){
+                                  //  ARManager.shared.actionStream.send(.bed)
+                                }.frame(width: 30,height: 30)
+                                    .padding()
+                                    .background(.regularMaterial)
+                                    .cornerRadius(16)
+                                
                                 Button{
                                     ARManager.shared.actionStream.send(.removeAllAnchors)
                                 }label: {
