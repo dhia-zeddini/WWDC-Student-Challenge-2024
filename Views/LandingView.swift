@@ -47,7 +47,7 @@ struct LandingView: View {
                         ScrollView(.horizontal){
                             HStack{
                                 Button("Bed"){
-                                  //  ARManager.shared.actionStream.send(.bed)
+                                    ARManager.shared.actionStream.send(.beer)
                                 }.frame(width: 30,height: 30)
                                     .padding()
                                     .background(.regularMaterial)

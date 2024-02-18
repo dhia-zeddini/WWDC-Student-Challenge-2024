@@ -9,6 +9,6 @@ import Foundation
 import SwiftUI
 struct Constants {
     static let customFont: String = "Marker Felt"
-    static let screenWidth: CGFloat = UIScreen.main.bounds.width
-    static let screenHeight: CGFloat = UIScreen.main.bounds.height
+    static let screenWidth: CGFloat = UIScreen.main.bounds.size.width
+    static let screenHeight: CGFloat = UIScreen.main.bounds.size.height
 }

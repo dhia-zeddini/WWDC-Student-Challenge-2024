@@ -28,6 +28,8 @@ class CustomARView: ARView{
                 switch action{
                 case .placeBlock(let color):
                     self?.placeBlock(ofColor: color)
+                case .beer:
+                    self?.placeBeer()
                 case .removeAllAnchors:
                     self?.scene.anchors.removeAll()
                 }
@@ -42,11 +44,19 @@ class CustomARView: ARView{
         let material = SimpleMaterial(color: UIColor(color) ,isMetallic: false)
         let entity = ModelEntity(mesh: block,materials: [material])
         
-        let anchor = AnchorEntity(plane: .horizontal)
+       /* let anchor = AnchorEntity(plane: .horizontal)
         anchor.addChild(entity)
         scene.addAnchor(anchor)
-        setupGestures(on: entity)
+        setupGestures(on: entity)*/
     }
+    func placeBeer(){
     
+        let entity = try? Entity.load(named: "pet_house")
+        
+       /* let anchor = AnchorEntity(plane: .horizontal)
+        anchor.addChild(entity!)
+        scene.addAnchor(anchor)*/
+        //setupGestures(on: entity)
+    }
 }
 

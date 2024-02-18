@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var isSideMenuVisible: Bool = false
+    /****************$$$$$$*/
     let screenWidth:CGFloat=Constants.screenWidth
     let screenHeight:CGFloat=Constants.screenHeight
     let dateFormatter: DateFormatter = {
@@ -17,8 +19,8 @@ struct HomeView: View {
     }()
     @StateObject private var viewModel = BottomPetsListViewModel()
     @State var selectedPet: Pet?
+    @State private var dragOffset = CGSize.zero
     var body: some View {
-        
         VStack {
             ScrollView(showsIndicators: false){
                 HStack(spacing: screenWidth/16){
@@ -46,6 +48,17 @@ struct HomeView: View {
                Spacer()
                
             BottomPetsList(selectedPetBinding: $selectedPet)
+            
+           }.overlay(
+            SideMenu(isVisible: $isSideMenuVisible)
+             //   .frame(width: screenWidth/3,alignment: .leading)
+                
+        )
+           .gesture(dragGesture)
+           .onTapGesture {
+               withAnimation {
+                   isSideMenuVisible = false
+               }
            }
     }
     private var petInfoSection: some View {
@@ -122,7 +135,7 @@ struct HomeView: View {
         .background(.white)
         .cornerRadius(30)
         .shadow(radius: 1)
-        //.frame(width: screenWidth / 3)
+        .frame(width: screenWidth / 3)
     }
 
     private var petInfoSectionn: some View {
@@ -175,20 +188,9 @@ struct HomeView: View {
                         )
                         .shadow(radius: 2)
                 }
-                    Image("male")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 40, height: 40)
-                        .padding()
-                        .background(Color.themeSecondary)
-                        .clipShape(Circle())
-                        .shadow(radius: 1)
-                        .offset(x: 0, y: screenWidth / 80)
             }
             .padding(.top,30)
-            
-
-            
+  
         }
         .padding(.horizontal)
             .background(.white)
@@ -196,6 +198,21 @@ struct HomeView: View {
             .shadow(radius: 5)
           //  .frame(width: screenWidth / 3)
             
+    }
+    
+    private var dragGesture: some Gesture {
+        DragGesture()
+            .onEnded {
+                if $0.translation.width < -100 {
+                    withAnimation {
+                        isSideMenuVisible = false
+                    }
+                } else if $0.translation.width > 100 {
+                    withAnimation {
+                        isSideMenuVisible = true
+                    }
+                }
+            }
     }
 
 }
@@ -205,3 +222,4 @@ struct HomeView: View {
 #Preview {
     HomeView()
 }
+
