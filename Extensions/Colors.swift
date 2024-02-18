@@ -41,4 +41,5 @@ extension Color {
     static let themePrimary = Color(hex: "#fefbf0")
     static let themeBlue = Color(hex: "#3b9dde")
     static let themeLightBlue = Color(hex: "#5bd2dd")
+    static let themeTestColor = Color(hex: "#40616e")
 }

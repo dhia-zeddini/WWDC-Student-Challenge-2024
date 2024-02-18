@@ -19,7 +19,8 @@ struct HomeView: View {
     }()
     @StateObject private var viewModel = BottomPetsListViewModel()
     @State var selectedPet: Pet?
-    @State private var dragOffset = CGSize.zero
+    
+    @State private var draggableWidgets: [CustomWidgetModel] = [MockData.taskOne,MockData.taskTwo,MockData.taskThee,MockData.taskFour]
     var body: some View {
         VStack {
             ScrollView(showsIndicators: false){
@@ -50,7 +51,7 @@ struct HomeView: View {
             BottomPetsList(selectedPetBinding: $selectedPet)
             
            }.overlay(
-            SideMenu(isVisible: $isSideMenuVisible)
+            SideMenu(isVisible: $isSideMenuVisible, draggableWidgets: draggableWidgets)
              //   .frame(width: screenWidth/3,alignment: .leading)
                 
         )

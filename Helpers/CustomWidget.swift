@@ -8,56 +8,24 @@
 import SwiftUI
 
 struct CustomWidget: View {
+    let draggableWidget: CustomWidgetModel
     var body: some View {
         VStack(alignment: .center) {
             ZStack {
-                VStack {
-                    Image("dog-image")
+                VStack(spacing:30) {
+                    Image(draggableWidget.imageT)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
+                        .background(Color.themeTestColor)
                         .cornerRadius(30)
                     
-                    VStack{
-                        HStack{
-                            VStack(spacing: 10){
-                                Text( "Name")
-                                    .font(.custom(Constants.customFont, size: 30))
-                                    .bold()
-                                
-                                Text( "Breed")
-                                    .font(.custom(Constants.customFont, size: 20))
-                            }.padding(.horizontal)
-                            Spacer(minLength: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/)
-                            HStack{
-                                
-                                Text("10.5 Kg")
-                                    .font(.custom(Constants.customFont, size: 20))
-                            }
-                            .padding()
-                            .background(.white)
-                                .clipShape(
-                                    .rect(
-                                        topLeadingRadius: 30,
-                                        bottomLeadingRadius: 30,
-                                        bottomTrailingRadius: 0,
-                                        topTrailingRadius: 0
-                                    )
-                                )
-                                .shadow(radius: 0.5)
-                        }
-                    }.padding(.top,30)
+                    Text( draggableWidget.title)
+                        .font(.custom(Constants.customFont, size: 24))
+                        .bold()
+
                        // .padding(.horizontal)
-                        .background(.white)
-                        .clipShape(
-                            .rect(
-                                topLeadingRadius: 30,
-                                bottomLeadingRadius: 0,
-                                bottomTrailingRadius: 0,
-                                topTrailingRadius: 30
-                            )
-                        )
-                        .shadow(radius: 2)
-                }
+                        
+                }.padding(.bottom,30)
             }
             .padding(.top,30)
   
@@ -70,6 +38,3 @@ struct CustomWidget: View {
     }
 }
 
-#Preview {
-    CustomWidget()
-}
