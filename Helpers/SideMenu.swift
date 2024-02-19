@@ -23,18 +23,11 @@ struct SideMenu: View {
                         ForEach(draggableWidgets, id: \.id) { widget in
                             CustomWidget(draggableWidget: widget)
                                 .draggable(widget)
-
                         }
                     }.padding()
-                    //.frame()
                 }
                 .ignoresSafeArea(.all)
-                
-                
-                Spacer()
             }
-            // .padding()
-            //.padding(.horizontal,40)
             .frame(width: geometry.size.width / 3.5, height: geometry.size.height, alignment: .leading)
             .background(.clear)
             .offset(x: isVisible ? 0 : -UIScreen.main.bounds.width)

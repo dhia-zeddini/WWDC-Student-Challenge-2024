@@ -6,10 +6,17 @@
 //
 
 import Combine
+import SwiftUI
 
 class ARManager{
     static let shared = ARManager()
     private init(){}
     
     var actionStream = PassthroughSubject<ARAction, Never>()
+}
+
+enum ARAction{
+    case placeBlock(color: Color)
+    case removeAllAnchors
+    case beer
 }

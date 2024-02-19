@@ -29,7 +29,7 @@ struct HomeView: View {
             ScrollView(showsIndicators: false){
                 HStack(spacing: screenWidth/16){
                     petInfoSection
-                        .padding(.top,30)
+                        //.padding(.top,30)
                     //Spacer()
                     DropArea(dropWidgets: dropWidgets,isTargeted: isDropTarget)
                         .padding()
@@ -45,7 +45,7 @@ struct HomeView: View {
                     
                 }.padding(.horizontal)
                 
-            }
+            }.padding(.top,30)
                Spacer()
                
             BottomPetsList(selectedPetBinding: $selectedPet)
@@ -154,34 +154,6 @@ struct HomeView: View {
             }
     }
 
-}
-struct DropArea: View {
-    let columnLayout = Array(repeating:GridItem() , count: 2)
-    let dropWidgets: [CustomWidgetModel]
-    let isTargeted: Bool
-    var body: some View{
-        ZStack {
-            RoundedRectangle(cornerRadius: 12)
-                .frame(maxWidth: .infinity)
-                .foregroundColor(isTargeted ? .teal.opacity(0.15) : Color(.clear))
-            if dropWidgets.isEmpty{
-                Text("Failed to create 0x88 image slot (alpha=1 wide=1) (client=0xac3b36ab) [0x5 (os/kern) failure]")
-                    .font(.custom(Constants.customFont, size: 40))
-                    .bold()
-                
-            }else{
-                ScrollView(showsIndicators: false) {
-                    LazyVGrid(columns: columnLayout, spacing: 36) {
-                        ForEach(dropWidgets, id: \.id) { widget in
-                            CustomWidget(draggableWidget: widget )
-                               // .padding(.top, 70)
-                        }
-                    }
-                    .padding()
-                }
-            }
-        }
-    }
 }
 
 #Preview {
