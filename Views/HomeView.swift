@@ -21,27 +21,27 @@ struct HomeView: View {
     @State var selectedPet: Pet?
     
     @State private var draggableWidgets: [CustomWidgetModel] = [MockData.taskOne,MockData.taskTwo,MockData.taskThee,MockData.taskFour]
+    @State private var dropWidgets: [CustomWidgetModel] = []
+    @State private var isDropTarget = false
+    
     var body: some View {
         VStack {
             ScrollView(showsIndicators: false){
                 HStack(spacing: screenWidth/16){
-                    VStack(spacing: screenWidth/16){
-                        petInfoSectionn
-                            .blur(radius: 4)
-                        petInfoSectionn
-                            .blur(radius: 4)
-                        
-                    }
-                    
                     petInfoSection
                         .padding(.top,30)
-                    VStack(spacing: screenWidth/16){
-                        petInfoSectionn
-                            .blur(radius: 4)
-                        petInfoSectionn
-                            .blur(radius: 4)
-                        
-                    }
+                    //Spacer()
+                    DropArea(dropWidgets: dropWidgets,isTargeted: isDropTarget)
+                        .padding()
+                        .dropDestination(for: CustomWidgetModel.self){droppedWidgets, location in
+                          let totalWidgets = dropWidgets + droppedWidgets
+                            dropWidgets = Array(totalWidgets.uniqued())
+                            return true
+                        }isTargeted: { isTargeted in
+                            isDropTarget = isTargeted
+                        }
+                    
+          
                     
                 }.padding(.horizontal)
                 
@@ -66,7 +66,7 @@ struct HomeView: View {
         VStack {
             Image(uiImage: viewModel.loadImageFromPath(selectedPet?.imagePath))
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
                     .clipped()
                     //.cornerRadius(30)
                    // .padding()
@@ -129,6 +129,7 @@ struct HomeView: View {
                     .clipShape(Circle())
                     .shadow(radius: 1)
                     .offset(x: 0, y: screenWidth / 80)
+               
             }.padding(.horizontal)
                 .padding(.bottom,30)
            
@@ -136,71 +137,8 @@ struct HomeView: View {
         .background(.white)
         .cornerRadius(30)
         .shadow(radius: 1)
-        .frame(width: screenWidth / 3)
+        .frame(width: screenWidth / 2.7)
     }
-
-    private var petInfoSectionn: some View {
-        VStack(alignment: .center) {
-            ZStack {
-                VStack {
-                    Image("dog-image")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .cornerRadius(30)
-                    
-                    VStack{
-                        HStack{
-                            VStack(spacing: 10){
-                                Text(selectedPet?.name ?? "Name")
-                                    .font(.custom(Constants.customFont, size: 30))
-                                    .bold()
-                                
-                                Text(selectedPet?.breed ?? "Breed")
-                                    .font(.custom(Constants.customFont, size: 20))
-                            }.padding(.horizontal)
-                            Spacer(minLength: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/)
-                            HStack{
-                                
-                                Text("10.5 Kg")
-                                    .font(.custom(Constants.customFont, size: 20))
-                            }
-                            .padding()
-                            .background(.white)
-                                .clipShape(
-                                    .rect(
-                                        topLeadingRadius: 30,
-                                        bottomLeadingRadius: 30,
-                                        bottomTrailingRadius: 0,
-                                        topTrailingRadius: 0
-                                    )
-                                )
-                                .shadow(radius: 0.5)
-                        }
-                    }.padding(.top,30)
-                       // .padding(.horizontal)
-                        .background(.white)
-                        .clipShape(
-                            .rect(
-                                topLeadingRadius: 30,
-                                bottomLeadingRadius: 0,
-                                bottomTrailingRadius: 0,
-                                topTrailingRadius: 30
-                            )
-                        )
-                        .shadow(radius: 2)
-                }
-            }
-            .padding(.top,30)
-  
-        }
-        .padding(.horizontal)
-            .background(.white)
-            .cornerRadius(30)
-            .shadow(radius: 5)
-          //  .frame(width: screenWidth / 3)
-            
-    }
-    
     private var dragGesture: some Gesture {
         DragGesture()
             .onEnded {
@@ -217,8 +155,34 @@ struct HomeView: View {
     }
 
 }
-
-
+struct DropArea: View {
+    let columnLayout = Array(repeating:GridItem() , count: 2)
+    let dropWidgets: [CustomWidgetModel]
+    let isTargeted: Bool
+    var body: some View{
+        ZStack {
+            RoundedRectangle(cornerRadius: 12)
+                .frame(maxWidth: .infinity)
+                .foregroundColor(isTargeted ? .teal.opacity(0.15) : Color(.clear))
+            if dropWidgets.isEmpty{
+                Text("Failed to create 0x88 image slot (alpha=1 wide=1) (client=0xac3b36ab) [0x5 (os/kern) failure]")
+                    .font(.custom(Constants.customFont, size: 40))
+                    .bold()
+                
+            }else{
+                ScrollView(showsIndicators: false) {
+                    LazyVGrid(columns: columnLayout, spacing: 36) {
+                        ForEach(dropWidgets, id: \.id) { widget in
+                            CustomWidget(draggableWidget: widget )
+                               // .padding(.top, 70)
+                        }
+                    }
+                    .padding()
+                }
+            }
+        }
+    }
+}
 
 #Preview {
     HomeView()
