@@ -20,7 +20,7 @@ struct CustomWidgetModel: Codable,Hashable ,Transferable{
     }
 }
 extension UTType{
-    static let develperTask = UTType(exportedAs: "com.dhia.animalpose.DragAndDrop")
+    static let develperTask = UTType(exportedAs: "com.dhia.wwdc.WWDC2024")
 }
 
 

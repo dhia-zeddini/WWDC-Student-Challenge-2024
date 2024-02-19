@@ -40,13 +40,15 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-algorithms.git", "1.2.0"..<"2.0.0")
+        .package(url: "https://github.com/apple/swift-algorithms.git", "1.2.0"..<"2.0.0"),
+        .package(url: "https://github.com/maxxfrazer/FocusEntity", "2.5.0"..<"3.0.0")
     ],
     targets: [
         .executableTarget(
             name: "AppModule",
             dependencies: [
-                .product(name: "Algorithms", package: "swift-algorithms")
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                .product(name: "FocusEntity", package: "focusentity")
             ],
             path: ".",
             resources: [
